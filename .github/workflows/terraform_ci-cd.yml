@@ -32,11 +32,6 @@ jobs:
         with:
           terraform_version: 1.5.7
 
-      - name: Terraform Format
-        id: fmt
-        run: terraform fmt -check
-        continue-on-error: true
-
       - name: Terraform Init
         id: init
         run: terraform init
@@ -48,10 +43,17 @@ jobs:
       - name: Terraform Plan
         id: plan
         run: terraform plan -no-color
-        #continue-on-error: true
         
       - name: Terraform Apply
         id: apply
         run: terraform apply -auto-approve
 
 
+      - name: Upload ansible inventory to S3 YC
+        uses: povetek/yandex-object-storage-action@v3
+        with:
+          access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          bucket: listopad-diploma
+          path: ansible
+          clear: false
